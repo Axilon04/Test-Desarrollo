@@ -47,6 +47,21 @@ function Received() {
   );
 }
 
+function Ontheway() {
+  return (
+    <section className="container all">
+      
+    </section>
+  )
+}
+
+function Delivered(){
+  return (
+    <section className="container all">
+    </section>
+  )
+}
+
 function Orders() {
   const [menu, setMenu] = useState("Recibido");
   const btns = ["Recibido", "En camino", "Entregado"];
@@ -68,6 +83,8 @@ function Orders() {
         </section>
       </section>
       {menu === btns[0] && <Received />}
+      {menu === btns[1] && <Ontheway />}
+      {menu === btns[2] && <Delivered />}
     </>
   );
 }
