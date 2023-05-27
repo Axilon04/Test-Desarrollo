@@ -1,90 +1,68 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "../ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { Separator } from "../ui/separator";
-
-import json from "../../data/orders.json";
-
-function OrderCard({ info }: any) {
-  const dateObject = new Date(info.date);
-  const formattedDate = new Intl.DateTimeFormat("es-ES", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(dateObject);
-  const formattedValue = `$${info.value.toLocaleString("es-ES")}`;
-
-  return (
-    <Card key={info.id} className="Card">
-      <CardHeader className="card-header">
-        <CardTitle className="card-title">Pedido # {info.id}</CardTitle>
-        <CardDescription className="card-description">
-          {info.address} / {formattedDate}
-        </CardDescription>
-        <Separator className="card-separator"/>
-      </CardHeader>
-      <CardContent className="card-content">
-        <p>{formattedValue}</p>
-      </CardContent>
-    </Card>
-  );
-}
-
-function Received() {
-  return (
-    <section className="container card all">
-      {json.map((info) => (
-        <OrderCard key={info.id} info={info} />
-      ))}
-    </section>
-  );
-}
-
-function Ontheway() {
-  return (
-    <section className="container all">
-      
-    </section>
-  )
-}
-
-function Delivered(){
-  return (
-    <section className="container all">
-    </section>
-  )
-}
+import ordersData from "../../data/orders.json";
+import OrderCard, { OrderProps } from "./OrderCard";
 
 function Orders() {
-  const [menu, setMenu] = useState("Recibido");
-  const btns = ["Recibido", "En camino", "Entregado"];
+  const menuOptions = ["Recibido", "En camino", "Entregado"];
+  const [selectedMenu, setSelectedMenu] = useState<string>(menuOptions[0]);
+
+  const filteredOrders: OrderProps[] = useMemo(() => {
+    const currentDate = new Date();
+    switch (selectedMenu) {
+      case menuOptions[0]:
+        return ordersData.filter(({ date }: OrderProps) => {
+          const orderDate = new Date(date);
+          return orderDate > currentDate;
+        });
+      case menuOptions[1]:
+        return ordersData.filter(({ date }: OrderProps) => {
+          const orderDate = new Date(date);
+          return (
+            orderDate.getFullYear() === currentDate.getFullYear() &&
+            orderDate.getMonth() === currentDate.getMonth() &&
+            orderDate.getDate() === currentDate.getDate()
+          );
+        });
+      case menuOptions[2]:
+        return ordersData.filter(({ date }: OrderProps) => {
+          const orderDate = new Date(date);
+          return orderDate < currentDate;
+        });
+      default:
+        return ordersData;
+    }
+  }, [selectedMenu]);
 
   return (
     <>
       <section className="container all">
         <h1>Historial de pedidos</h1>
         <section className="container btn">
-          {btns.map((btn, index) => (
+          {menuOptions.map((button, index) => (
             <Button
               key={index}
-              onClick={() => setMenu(btn)}
-              className={`option ${menu === btn ? "Active" : "Disabled"}`}
+              onClick={() => setSelectedMenu(button)}
+              className={`option ${
+                selectedMenu === button ? "active" : "disabled"
+              }`}
             >
-              {btn}
+              {button}
             </Button>
           ))}
         </section>
       </section>
-      {menu === btns[0] && <Received />}
-      {menu === btns[1] && <Ontheway />}
-      {menu === btns[2] && <Delivered />}
+      <section className="container all card">
+        {filteredOrders.map(({ id, address, date, value }) => (
+          <OrderCard
+            key={id}
+            id={id}
+            address={address}
+            date={date}
+            value={value}
+          />
+        ))}
+      </section>
     </>
   );
 }
