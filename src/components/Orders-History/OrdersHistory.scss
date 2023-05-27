@@ -1,0 +1,62 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    &.all{
+        width: 75%;
+    }
+    .btn{
+        flex-direction: row;
+        gap:8%;
+        padding: 0 0 1em 0;
+    }
+    & > h1{
+        color: var(--color-blue);
+        font-weight: bold;
+        margin: 2% 0;
+        font-size: 1.3em;
+    }
+    .option{
+        background-color: var(--color-gray);
+        width: 100%;
+        min-width: 2.5em;
+        border-radius: 25px;
+        
+        &.Active{
+            background-color: var(--color-blue);
+        }
+        &:hover{
+            background-color: var(--color-blue);
+        } 
+    }
+    &.card{
+        gap: 1em;
+        padding-bottom: 2rem;
+    }
+    .Card {
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+        .card-header{
+            padding: 1.5rem 0 0 1.5rem;
+            width: 70%;
+            .card-title{
+                color:var(--color-blue);
+                font-size: 1.25em;
+            }
+            .card-description {
+                margin-bottom: 1%;
+                font-size: 1em;
+            }
+        }
+        .card-separator{
+            width: 100%;
+        }
+        .card-content{
+            padding-top: 1%;
+            color:var(--color-blue);
+            font-weight: bold;
+            font-size: 1em;
+        }
+       
+    }
+}
+
